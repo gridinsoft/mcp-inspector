@@ -2,17 +2,42 @@
 
 MCP (Model Context Protocol) server for domain and URL security analysis powered by [GridinSoft Inspector](https://inspector.gridinsoft.com).
 
-## Features
+## 🛡️ Trust & Safety for AI
 
-- **Domain Analysis** - Check domain reputation, category, and threat level
-- **URL Scanning** - Detect phishing, malware, and malicious redirects
-- **Real-time Data** - Access GridinSoft's constantly updated threat database
+This MCP server allows your AI agent (Claude, Cursor, etc.) to verify any website or link. It helps answer the critical question: "**Can I trust this site?**"
 
-## Installation
+## ✨ Key Features
 
-### Claude Desktop
+- **Domain Reputation** - Check if a site is well-known, safe, or suspicious.
+- **Phishing Detection** - Identify fraudulent pages designed to steal credentials.
+- **Malware Scanning** - Detect links hosting harmful files or scripts.
+- **Real-time Engine** - Access GridinSoft's global threat database.
 
-Add to your Claude Desktop config (`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS):
+## 🎁 Free Plan
+
+Every new account gets **100 API credits per month for free**. No credit card required.
+
+## 🚀 Use Cases
+
+The GridinSoft MCP is useful far beyond simple coding assistance:
+
+- **Security Research**: Automate the analysis of suspicious domains mentioned in your research.
+- **Email Verification**: Ask your AI to check all links in a suspicious email body.
+- **DevSecOps**: Verify third-party dependencies or documentation links during development.
+- **Safe Browsing**: Get a verdict before clicking on shortened or unknown URLs.
+
+## 🛠️ Connection Guide
+
+### 1. Get your API Key
+
+1. Sign up at [inspector.gridinsoft.com](https://inspector.gridinsoft.com/login).
+2. Grab your key from the [Profile page](https://inspector.gridinsoft.com/profile).
+
+### 2. Connect to your AI
+
+#### Claude Desktop
+
+Add to your config (`~/Library/Application Support/Claude/claude_desktop_config.json`):
 
 ```json
 {
@@ -28,82 +53,56 @@ Add to your Claude Desktop config (`~/Library/Application Support/Claude/claude_
 }
 ```
 
-### Cursor IDE
+#### Cursor or Windsurf IDE
 
-1. Go to **Settings** -> **Models** -> **MCP**
-2. Click **+ Add new MCP server**
-3. Set Name to `GridinSoft`, Type to `command`, and Command to `npx -y @gridinsoft/mcp-inspector`
-4. Add Environment Variable `GRIDINSOFT_API_KEY` with your key.
+1. Open **Settings** -> **Models** -> **MCP**.
+2. Add a new command: `npx -y @gridinsoft/mcp-inspector`.
+3. Set environment variable `GRIDINSOFT_API_KEY`.
 
-### Windsurf IDE
+## 🤖 Example Prompts
 
-Add to your Windsurf config (`~/.codeium/windsurf/mcp_config.json`):
+Try asking your AI these questions:
 
-```json
-{
-  "mcpServers": {
-    "gridinsoft": {
-      "command": "npx",
-      "args": ["-y", "@gridinsoft/mcp-inspector"],
-      "env": {
-        "GRIDINSOFT_API_KEY": "your_api_key_here"
-      }
-    }
-  }
-}
-```
+- _"Is the domain `example-crypto-site.com` safe to use?"_
+- _"I received a link to `http://bit.ly/xxxx`. Scan it for phishing before I open it."_
+- _"What is the reputation of `gridinsoft.com`?"_
+- _"Should I trust this website? It looks like a login page but the URL is strange."_
 
-### Get API Key
+## 🔧 Available Tools
 
-1. Sign up at [inspector.gridinsoft.com](https://inspector.gridinsoft.com/login)
-2. Get your API key from [Profile page](https://inspector.gridinsoft.com/profile)
-3. New accounts receive **100 free credits**
-
-## Available Tools
-
-### inspect_domain
+### `inspect_domain`
 
 Analyze a site for security, reputation, and to determine if it is safe and can be trusted.
 
-```
-"Analyze the domain suspicious-site.com for security threats"
-```
+- **Input**: `{ "domain": "example.com" }`
+- **Cost**: 1 credit
 
-**Cost**: 1 credit
-
-### scan_url
+### `scan_url`
 
 Scan a URL for phishing, malware, and other threats to verify if the site is safe to visit.
 
-```
-"Scan https://example.com/login.php for threats"
-```
+- **Input**: `{ "url": "https://example.com/login" }`
+- **Cost**: 3 credits
 
-**Cost**: 3 credits
+### `get_balance`
 
-### get_balance
+Check your remaining credits and current subscription status.
 
-Check your remaining credits and subscription status.
+- **Cost**: Free
 
-```
-"How many API credits do I have left?"
-```
+## 📊 Pricing
 
-**Cost**: Free
+- **Free**: 100 credits/mo ($0)
+- **Basic**: 1,500 credits/mo (~$44/mo)
+- **Standard**: 5,000 credits/mo (~$124/mo)
 
-## Pricing
+_Sign in to your dashboard to view all available plans and detailed comparison._
 
-| Plan         | Credits | Price (Annually) |
-| ------------ | ------- | ---------------- |
-| **Free**     | 100     | $0               |
-| **Basic**    | 1,500   | $44/mo           |
-| **Standard** | 5,000   | $124/mo          |
-| **Premium**  | 20,000  | $539/mo          |
+## 🔗 Links
 
-## Links
-
-- [Documentation](https://inspector.gridinsoft.com/mcp)
-- [Support](mailto:support@gridinsoft.com)
+- [Official Website](https://inspector.gridinsoft.com)
+- [Website Reputation Checker](https://gridinsoft.com/website-reputation-checker)
+- [NPM Package](https://www.npmjs.com/package/@gridinsoft/mcp-inspector)
 
 ## License
 
