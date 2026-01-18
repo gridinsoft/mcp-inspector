@@ -37,15 +37,13 @@ async function callAPI(
 }
 
 async function main() {
-  const apiKey = process.env.GRIDINSOFT_API_KEY;
+  const apiKey = process.env.GRIDINSOFT_API_KEY || "";
 
   if (!apiKey) {
-    console.error("Error: GRIDINSOFT_API_KEY environment variable is required");
-    console.error("Get your API key at: https://inspector.gridinsoft.com/profile");
-    console.error("");
-    console.error("Usage:");
-    console.error("  GRIDINSOFT_API_KEY=your_key npx @gridinsoft/mcp-inspector");
-    process.exit(1);
+    console.warn("Warning: GRIDINSOFT_API_KEY environment variable is not set.");
+    console.warn("Public endpoints (list_tools, prompts, resources) will work, but tool calls will fail.");
+    console.warn("Get your API key at: https://inspector.gridinsoft.com/profile");
+    console.warn("");
   }
 
   const server = new Server(
@@ -75,6 +73,16 @@ async function main() {
   // Handle tool calls
   server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const { name, arguments: args } = request.params;
+
+    if (!apiKey) {
+      return {
+        content: [{ 
+          type: "text", 
+          text: "Error: GRIDINSOFT_API_KEY is not set. Please get your API key at https://inspector.gridinsoft.com/profile and add it to your configuration." 
+        }],
+        isError: true,
+      };
+    }
 
     try {
       const result = await callAPI("/tools/call", apiKey, {
