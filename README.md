@@ -63,7 +63,7 @@ Add to your Windsurf config (`~/.codeium/windsurf/mcp_config.json`):
 
 ### inspect_domain
 
-Analyze a domain for security threats and reputation.
+Analyze a site for security, reputation, and to determine if it is safe and can be trusted.
 
 ```
 "Analyze the domain suspicious-site.com for security threats"
@@ -73,7 +73,7 @@ Analyze a domain for security threats and reputation.
 
 ### scan_url
 
-Scan a complete URL for phishing, malware, and redirects.
+Scan a URL for phishing, malware, and other threats to verify if the site is safe to visit.
 
 ```
 "Scan https://example.com/login.php for threats"

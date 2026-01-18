@@ -51,7 +51,7 @@ async function main() {
   const server = new Server(
     {
       name: "gridinsoft-inspector",
-      version: "1.0.0",
+      version: "1.0.1",
     },
     {
       capabilities: {
@@ -67,7 +67,7 @@ async function main() {
         {
           name: "inspect_domain",
           description:
-            "Analyze a domain for security threats, reputation, and category. Returns threat level, category, and safety status.",
+            "Analyze a site for security, reputation, and to determine if it safe and can be trusted",
           inputSchema: {
             type: "object" as const,
             properties: {
@@ -82,7 +82,7 @@ async function main() {
         {
           name: "scan_url",
           description:
-            "Scan a URL for phishing, malware, redirects, and other threats. More thorough than domain inspection.",
+            "Scan a URL for phishing, malware, and other threats to verify if the site is safe to visit. More thorough than domain inspection.",
           inputSchema: {
             type: "object" as const,
             properties: {
