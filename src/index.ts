@@ -23,7 +23,7 @@ async function callAPI(
     method: body ? "POST" : "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
+      ...(apiKey ? { Authorization: `Bearer ${apiKey}` } : {}),
     },
     body: body ? JSON.stringify(body) : undefined,
   });
@@ -39,17 +39,10 @@ async function callAPI(
 async function main() {
   const apiKey = process.env.GRIDINSOFT_API_KEY || "";
 
-  if (!apiKey) {
-    console.warn("Warning: GRIDINSOFT_API_KEY environment variable is not set.");
-    console.warn("Public endpoints (list_tools, prompts, resources) will work, but tool calls will fail.");
-    console.warn("Get your API key at: https://inspector.gridinsoft.com/profile");
-    console.warn("");
-  }
-
   const server = new Server(
     {
       name: "gridinsoft-inspector",
-      version: "1.0.2",
+      version: "1.0.4",
     },
     {
       capabilities: {
@@ -63,9 +56,19 @@ async function main() {
   // List available tools (dynamically from server)
   server.setRequestHandler(ListToolsRequestSchema, async () => {
     try {
-      return await callAPI("/tools", apiKey) as any;
+      const response = await callAPI("/tools", apiKey) as any;
+      // Filter tools to ensure strict compliance with MCP spec (remove 'cost' etc)
+      if (response && Array.isArray(response.tools)) {
+        return {
+          tools: response.tools.map((tool: any) => ({
+            name: tool.name,
+            description: tool.description,
+            inputSchema: tool.inputSchema,
+          }))
+        };
+      }
+      return response;
     } catch (error) {
-      console.error("Error fetching tools:", error);
       return { tools: [] };
     }
   });
@@ -108,7 +111,6 @@ async function main() {
     try {
       return await callAPI("/prompts", apiKey) as any;
     } catch (error) {
-      console.error("Error fetching prompts:", error);
       return { prompts: [] };
     }
   });
@@ -118,7 +120,7 @@ async function main() {
     try {
       return await callAPI(`/prompts/get?name=${encodeURIComponent(request.params.name)}`, apiKey) as any;
     } catch (error) {
-      throw new Error(`Error fetching prompt details: ${error}`);
+      throw new Error(`Error fetching prompt details`);
     }
   });
 
@@ -127,7 +129,6 @@ async function main() {
     try {
       return await callAPI("/resources", apiKey) as any;
     } catch (error) {
-      console.error("Error fetching resources:", error);
       return { resources: [] };
     }
   });
@@ -137,7 +138,7 @@ async function main() {
     try {
       return await callAPI(`/resources/read?uri=${encodeURIComponent(request.params.uri)}`, apiKey) as any;
     } catch (error) {
-      throw new Error(`Error reading resource: ${error}`);
+      throw new Error(`Error reading resource`);
     }
   });
 
