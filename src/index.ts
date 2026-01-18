@@ -5,21 +5,21 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
+  ListPromptsRequestSchema,
+  GetPromptRequestSchema,
+  ListResourcesRequestSchema,
+  ReadResourceRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
 
 const API_BASE = "https://inspector.gridinsoft.com/mcp/v1";
-
-interface ToolResult {
-  content: Array<{ type: string; text: string }>;
-  isError?: boolean;
-}
 
 async function callAPI(
   endpoint: string,
   apiKey: string,
   body?: object
 ): Promise<unknown> {
-  const response = await fetch(`${API_BASE}${endpoint}`, {
+  const url = `${API_BASE}${endpoint}`;
+  const response = await fetch(url, {
     method: body ? "POST" : "GET",
     headers: {
       "Content-Type": "application/json",
@@ -51,60 +51,25 @@ async function main() {
   const server = new Server(
     {
       name: "gridinsoft-inspector",
-      version: "1.0.1",
+      version: "1.0.2",
     },
     {
       capabilities: {
         tools: {},
+        prompts: {},
+        resources: {},
       },
     }
   );
 
-  // List available tools
+  // List available tools (dynamically from server)
   server.setRequestHandler(ListToolsRequestSchema, async () => {
-    return {
-      tools: [
-        {
-          name: "inspect_domain",
-          description:
-            "Analyze a site for security, reputation, and to determine if it safe and can be trusted",
-          inputSchema: {
-            type: "object" as const,
-            properties: {
-              domain: {
-                type: "string",
-                description: "Domain name to analyze (e.g., 'example.com')",
-              },
-            },
-            required: ["domain"],
-          },
-        },
-        {
-          name: "scan_url",
-          description:
-            "Scan a URL for phishing, malware, and other threats to verify if the site is safe to visit. More thorough than domain inspection.",
-          inputSchema: {
-            type: "object" as const,
-            properties: {
-              url: {
-                type: "string",
-                description: "Full URL to scan (e.g., 'https://example.com/page')",
-              },
-            },
-            required: ["url"],
-          },
-        },
-        {
-          name: "get_balance",
-          description:
-            "Check your remaining API credits and subscription plan status.",
-          inputSchema: {
-            type: "object" as const,
-            properties: {},
-          },
-        },
-      ],
-    };
+    try {
+      return await callAPI("/tools", apiKey) as any;
+    } catch (error) {
+      console.error("Error fetching tools:", error);
+      return { tools: [] };
+    }
   });
 
   // Handle tool calls
@@ -127,6 +92,44 @@ async function main() {
         content: [{ type: "text", text: `Error: ${message}` }],
         isError: true,
       };
+    }
+  });
+
+  // List available prompts
+  server.setRequestHandler(ListPromptsRequestSchema, async () => {
+    try {
+      return await callAPI("/prompts", apiKey) as any;
+    } catch (error) {
+      console.error("Error fetching prompts:", error);
+      return { prompts: [] };
+    }
+  });
+
+  // Get specific prompt
+  server.setRequestHandler(GetPromptRequestSchema, async (request) => {
+    try {
+      return await callAPI(`/prompts/get?name=${encodeURIComponent(request.params.name)}`, apiKey) as any;
+    } catch (error) {
+      throw new Error(`Error fetching prompt details: ${error}`);
+    }
+  });
+
+  // List available resources
+  server.setRequestHandler(ListResourcesRequestSchema, async () => {
+    try {
+      return await callAPI("/resources", apiKey) as any;
+    } catch (error) {
+      console.error("Error fetching resources:", error);
+      return { resources: [] };
+    }
+  });
+
+  // Read specific resource
+  server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
+    try {
+      return await callAPI(`/resources/read?uri=${encodeURIComponent(request.params.uri)}`, apiKey) as any;
+    } catch (error) {
+      throw new Error(`Error reading resource: ${error}`);
     }
   });
 

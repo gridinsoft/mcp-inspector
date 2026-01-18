@@ -72,17 +72,19 @@ Try asking your AI these questions:
 
 ### `inspect_domain`
 
-Analyze a site for security, reputation, and to determine if it is safe and can be trusted.
+Comprehensive domain security profile. Returns reputation (0-100), vendor verdicts, hosting/IP info, registrar history, and detailed security tags.
 
+- **Web Version**: [inspector.gridinsoft.com/domain-checker](https://inspector.gridinsoft.com/domain-checker)
 - **Input**: `{ "domain": "example.com" }`
-- **Cost**: 1 credit
+- **Cost**: 3 credits
 
 ### `scan_url`
 
-Scan a URL for phishing, malware, and other threats to verify if the site is safe to visit.
+Deep forensic URL analysis. Extracts metadata, effective URL, full redirect chain, DNS/SSL details, and forensic data (screenshots, network traffic, cookies, console logs for paid plans).
 
+- **Web Version**: [inspector.gridinsoft.com/url-scanner](https://inspector.gridinsoft.com/url-scanner)
 - **Input**: `{ "url": "https://example.com/login" }`
-- **Cost**: 3 credits
+- **Cost**: 10 credits
 
 ### `get_balance`
 
