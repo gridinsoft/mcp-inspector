@@ -28,6 +28,31 @@ Add to your Claude Desktop config (`~/Library/Application Support/Claude/claude_
 }
 ```
 
+### Cursor IDE
+
+1. Go to **Settings** -> **Models** -> **MCP**
+2. Click **+ Add new MCP server**
+3. Set Name to `GridinSoft`, Type to `command`, and Command to `npx -y @gridinsoft/mcp-inspector`
+4. Add Environment Variable `GRIDINSOFT_API_KEY` with your key.
+
+### Windsurf IDE
+
+Add to your Windsurf config (`~/.codeium/windsurf/mcp_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "gridinsoft": {
+      "command": "npx",
+      "args": ["-y", "@gridinsoft/mcp-inspector"],
+      "env": {
+        "GRIDINSOFT_API_KEY": "your_api_key_here"
+      }
+    }
+  }
+}
+```
+
 ### Get API Key
 
 1. Sign up at [inspector.gridinsoft.com](https://inspector.gridinsoft.com/login)
@@ -75,12 +100,9 @@ Check your remaining credits and subscription status.
 | **Standard** | 5,000   | $124/mo          |
 | **Premium**  | 20,000  | $539/mo          |
 
-See [pricing page](https://inspector.gridinsoft.com/pricing) for full details and monthly options.
-
 ## Links
 
 - [Documentation](https://inspector.gridinsoft.com/mcp)
-- [API Reference](https://inspector.gridinsoft.com/api)
 - [Support](mailto:support@gridinsoft.com)
 
 ## License
