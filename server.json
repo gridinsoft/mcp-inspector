@@ -1,0 +1,28 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.gridinsoft/inspector",
+  "description": "Domain and URL security analysis powered by GridinSoft. Detect phishing, malware, and reputation threats in real-time.",
+  "repository": {
+    "url": "https://github.com/gridinsoft/mcp-inspector",
+    "source": "github"
+  },
+  "version": "1.0.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@gridinsoft/mcp-inspector",
+      "version": "1.0.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "GRIDINSOFT_API_KEY",
+          "description": "API key from inspector.gridinsoft.com/profile (100 free credits on signup)",
+          "isRequired": true,
+          "isSecret": true
+        }
+      ]
+    }
+  ]
+}

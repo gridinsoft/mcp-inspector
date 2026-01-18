@@ -1,0 +1,45 @@
+{
+  "name": "@gridinsoft/mcp-inspector",
+  "version": "1.0.0",
+  "mcpName": "io.github.gridinsoft/inspector",
+  "description": "MCP server for domain and URL security analysis powered by GridinSoft Inspector",
+  "main": "dist/index.js",
+  "bin": {
+    "mcp-inspector": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "security",
+    "domain-analysis",
+    "url-scanner",
+    "phishing-detection",
+    "malware",
+    "gridinsoft"
+  ],
+  "author": "GridinSoft",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gridinsoft/mcp-inspector.git"
+  },
+  "homepage": "https://inspector.gridinsoft.com/mcp",
+  "bugs": {
+    "url": "https://github.com/gridinsoft/mcp-inspector/issues"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
