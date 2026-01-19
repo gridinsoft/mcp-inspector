@@ -37,12 +37,78 @@ async function callAPI(
 }
 
 async function main() {
+  const args = process.argv.slice(2);
+  if (args.includes('--help') || args.includes('-h')) {
+    console.log(`
+GridinSoft Inspector MCP Server v1.0.6
+
+Usage:
+  mcp-inspector           Start the MCP server (Stdio)
+  mcp-inspector --help    Show this help message
+  mcp-inspector --version Show version information
+
+Environment Variables:
+  GRIDINSOFT_API_KEY      Your API key from https://inspector.gridinsoft.com/profile
+    `);
+    process.exit(0);
+  }
+
+  if (args.includes('--version') || args.includes('-v')) {
+    console.log('1.0.6');
+    process.exit(0);
+  }
+
   const apiKey = process.env.GRIDINSOFT_API_KEY || "";
+
+  // Handle CLI mode (e.g., npx @gridinsoft/mcp-inspector check example.com)
+  const isCheck = args.includes('check') || args.includes('inspect');
+  const isScan = args.includes('scan');
+
+  if (isCheck || isScan) {
+    const value = args.find(a => !['check', 'inspect', 'scan'].includes(a) && !a.startsWith('-'));
+    if (!value) {
+      console.error(`Error: Missing ${isCheck ? 'domain' : 'URL'} argument.`);
+      process.exit(1);
+    }
+
+    if (!apiKey) {
+      console.error("Error: GRIDINSOFT_API_KEY environment variable is not set.");
+      process.exit(1);
+    }
+
+    try {
+      let result;
+      if (isCheck) {
+        result = await callAPI("/tools/call", apiKey, {
+          name: "inspect_domain",
+          arguments: { domain: value },
+        });
+      } else {
+        result = await callAPI("/tools/call", apiKey, {
+          name: "scan_url",
+          arguments: { url: value },
+        });
+      }
+      console.log(JSON.stringify(result, null, 2));
+      process.exit(0);
+    } catch (error) {
+      console.error(`Error: ${error instanceof Error ? error.message : String(error)}`);
+      process.exit(1);
+    }
+  }
+
+  // Prevent hanging if run in an interactive terminal without arguments
+  if (process.stdin.isTTY && args.length === 0) {
+    console.error("GridinSoft Inspector MCP Server");
+    console.error("Error: This server is intended to be run by an MCP client (stdio transport).");
+    console.error("To see available options, run with --help");
+    process.exit(1);
+  }
 
   const server = new Server(
     {
       name: "gridinsoft-inspector",
-      version: "1.0.5",
+      version: "1.0.6",
     },
     {
       capabilities: {

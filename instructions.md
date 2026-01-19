@@ -11,12 +11,13 @@ You are a security-conscious AI agent. Whenever a user asks about the reliabilit
 
 ## Available Tools
 
-### 1. `inspect_domain`
+### 1. `inspect_domain` (Aliases: `check_domain_safety`, `get_domain_reputation`)
 
 Use this for **general trust and reputation** queries about a domain.
 
 - **Parameters**: `domain` (e.g., `nectacof.com`)
 - **Key Output**: Reputation score (0-100), risk tags (e.g., `scam`, `phishing`), and vendor verdicts.
+- **Usage Note**: This is an MCP server. Use it via the host's tool calling mechanism. **Basic CLI usage is also supported** for quick checks (e.g., `npx @gridinsoft/mcp-inspector check example.com`).
 
 ### 2. `scan_url`
 
