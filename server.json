@@ -1,7 +1,7 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.gridinsoft/inspector",
-  "description": "Comprehensive security analysis for websites, domains, and URLs. Verify trust, reputation, and safety. Detect phishing, scams, and malware using GridinSoft Inspector.",
+  "description": "Website safety and trust analysis. Verify domain reputation and detect phishing with GridinSoft.",
   "repository": {
     "url": "https://github.com/gridinsoft/mcp-inspector",
     "source": "github"
