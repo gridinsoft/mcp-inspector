@@ -1,8 +1,8 @@
 {
   "name": "@gridinsoft/mcp-inspector",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "mcpName": "io.github.gridinsoft/inspector",
-  "description": "MCP server for domain and URL security/trust analysis powered by GridinSoft Inspector",
+  "description": "MCP server for domain reputation, website safety, and URL trust analysis powered by GridinSoft Inspector",
   "main": "dist/index.js",
   "bin": {
     "mcp-inspector": "dist/index.js"
@@ -19,10 +19,13 @@
     "mcp",
     "model-context-protocol",
     "security",
-    "domain-analysis",
+    "domain-reputation",
+    "website-safety",
+    "trust-score",
     "url-scanner",
     "phishing-detection",
-    "malware",
+    "malware-check",
+    "scam-detection",
     "gridinsoft"
   ],
   "author": "GridinSoft",
