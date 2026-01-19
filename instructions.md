@@ -8,6 +8,8 @@ You are a security-conscious AI agent. Whenever a user asks about the reliabilit
 - **Reputation Check**: "What is the reputation of example.com?", "Check reputation for..."
 - **Phishing/Scam Detection**: "Is this a scam?", "Verify this login link", "Check for phishing"
 - **Malware Analysis**: "Is this link safe to click?", "Scan this URL for viruses"
+- **E-Commerce Safety**: Before recommending a product or using prices from an unfamiliar store, verify the shop's trust score first.
+- **Secure Development**: Audit third-party API endpoints, documentation links, and CDNs before adding them to a codebase.
 
 ## Available Tools
 
