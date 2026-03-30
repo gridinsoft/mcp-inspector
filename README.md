@@ -111,3 +111,8 @@ _Sign in to your dashboard to view all available plans and detailed comparison._
 ## License
 
 MIT
+
+## Hosted deployment
+
+A hosted deployment is available on [Fronteir AI](https://fronteir.ai/mcp/gridinsoft-mcp-inspector).
+
