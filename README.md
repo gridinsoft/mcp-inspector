@@ -1,45 +1,17 @@
 # @gridinsoft/mcp-inspector
 
-MCP (Model Context Protocol) server for domain and URL security analysis powered by [GridinSoft Inspector](https://inspector.gridinsoft.com).
+A [Model Context Protocol](https://modelcontextprotocol.io/) server for domain reputation and URL analysis, powered by [GridinSoft Inspector](https://inspector.gridinsoft.com).
 
-## 🛡️ Trust & Safety for AI
+## Requirements
 
-This MCP server allows your AI agent (Claude, Cursor, etc.) to verify any website or link. It helps answer the critical question: "**Can I trust this site?**"
+- Node.js 22 or newer, with npm/npx available to your MCP host.
+- A GridinSoft Inspector API key from your [profile](https://inspector.gridinsoft.com/profile).
 
-## ✨ Key Features
+The npm package runs locally over **stdio** and calls the Inspector REST API over HTTPS. `https://inspector.gridinsoft.com/mcp` is the documentation page; `/mcp/v1` is the REST bridge used by this package. Neither URL is a native remote MCP Streamable HTTP or SSE endpoint.
 
-- **Domain Reputation** - Check if a site is well-known, safe, or suspicious.
-- **Phishing Detection** - Identify fraudulent pages designed to steal credentials.
-- **Malware Scanning** - Detect links hosting harmful files or scripts.
-- **Real-time Engine** - Access GridinSoft's global threat database.
+## Connect an MCP client
 
-## 🎁 Free Plan
-
-Every new account gets **100 API credits per month for free**. No credit card required.
-
-## 🚀 Real-World Scenarios
-
-Integrate GridinSoft's threat intelligence directly into your decision-making process:
-
-- **Secure Development**: Automatically audit third-party API endpoints, documentation links, and CDNs before adding them to your codebase.
-- **Automated Documentation Review**: Ask your AI to scan all external links in a README or technical specification to ensure no broken or malicious redirects exist.
-- **Incident Response**: Paste suspicious logs or email headers into your IDE and have the AI immediately categorize mentioned domains (e.g., C2 servers, phishing drops).
-- **Proactive Security Layers**: Instruct your AI agents to "never summarize content from domains with a reputation score below 70" to prevent accidental exposure to malicious content.
-- **Competitive Intelligence**: Safely explore new industry sites and verify the legitimacy of emerging platforms mentioned in market research tasks.
-- **E-Commerce Safety**: Before your AI agent recommends a product or uses prices from an unfamiliar online store, have it verify the shop's trust score first. Avoid scam sites that offer "too good to be true" deals.
-
-## 🛠️ Connection Guide
-
-### 1. Get your API Key
-
-1. Sign up at [inspector.gridinsoft.com](https://inspector.gridinsoft.com/login).
-2. Grab your key from the [Profile page](https://inspector.gridinsoft.com/profile).
-
-### 2. Connect to your AI
-
-#### Claude Desktop
-
-Add to your config (`~/Library/Application Support/Claude/claude_desktop_config.json`):
+Add this entry to your client's MCP server configuration:
 
 ```json
 {
@@ -55,58 +27,70 @@ Add to your config (`~/Library/Application Support/Claude/claude_desktop_config.
 }
 ```
 
-#### Cursor or Windsurf IDE
+Use the configuration location and command transport supported by your MCP host. If it cannot find `npx`, supply the absolute path to your Node.js installation's `npx` executable.
 
-1. Open **Settings** -> **Models** -> **MCP**.
-2. Add a new command: `npx -y @gridinsoft/mcp-inspector`.
-3. Set environment variable `GRIDINSOFT_API_KEY`.
+URL scans may take up to 90 seconds. Where your client supports it, set its MCP request timeout to at least **120 seconds**. The adapter's HTTP timeout defaults to 110 seconds and can be configured with `GRIDINSOFT_TIMEOUT_MS` (a positive integer in milliseconds). The adapter does not automatically retry requests, because a submitted scan may have already consumed credits. After a timeout, check the Inspector dashboard before submitting it again.
 
-## 🤖 Example Prompts
+## Tools
 
-Try asking your AI these questions:
+| Tool | Input | Purpose | Credits |
+| --- | --- | --- | --- |
+| `inspect_domain` | `{"domain":"example.com"}` | Available reputation score, verdict, categories, and report link | 3 |
+| `check_domain_safety` | `{"domain":"example.com"}` | Alias for `inspect_domain` | 3 |
+| `get_domain_reputation` | `{"domain":"example.com"}` | Alias for `inspect_domain` | 3 |
+| `scan_url` | `{"url":"https://example.com/login"}` | Page metadata and available security signals; additional analysis depends on the plan | 10 |
+| `get_balance` | `{}` | Remaining credits and subscription status | Free |
 
-- _"Is the domain `example-crypto-site.com` safe to use?"_
-- _"I received a link to `http://bit.ly/xxxx`. Scan it for phishing before I open it."_
-- _"What is the reputation of `gridinsoft.com`?"_
-- _"Should I trust this website? It looks like a login page but the URL is strange."_
+An `Unknown` verdict means no assessment is available; it does not mean the target is safe. Tool execution errors return `isError: true`, with an explanation in `content`. Discovery or prompt/resource failures surface as MCP errors.
 
-## 🔧 Available Tools
+## Prompts and resources
 
-### `inspect_domain`
+- `check-website-safety` requires the `site` argument (a URL or domain).
+- `verify-domain-trust` requires the `domain` argument.
+- `gs://guide/threat-categories` describes the security and content categories. A content category alone does not establish malware or fraud.
 
-Comprehensive domain security profile. Returns reputation (0-100), vendor verdicts, hosting/IP info, registrar history, and detailed security tags.
+Example prompt arguments:
 
-- **Web Version**: [inspector.gridinsoft.com/domain-checker](https://inspector.gridinsoft.com/domain-checker)
-- **Input**: `{ "domain": "example.com" }`
-- **Cost**: 3 credits
+```json
+{
+  "name": "check-website-safety",
+  "arguments": { "site": "https://example.com" }
+}
+```
 
-### `scan_url`
+## Command-line use
 
-Deep forensic URL analysis. Extracts metadata, effective URL, full redirect chain, DNS/SSL details, and forensic data (screenshots, network traffic, cookies, console logs for paid plans).
+With `GRIDINSOFT_API_KEY` set in your environment:
 
-- **Web Version**: [inspector.gridinsoft.com/url-scanner](https://inspector.gridinsoft.com/url-scanner)
-- **Input**: `{ "url": "https://example.com/login" }`
-- **Cost**: 10 credits
+```sh
+npx -y @gridinsoft/mcp-inspector check example.com
+npx -y @gridinsoft/mcp-inspector inspect example.com
+npx -y @gridinsoft/mcp-inspector scan https://example.com/login
+npx -y @gridinsoft/mcp-inspector --help
+```
 
-### `get_balance`
+Commands print the JSON tool result and exit with a nonzero status on failure. Running without arguments starts the stdio MCP server when launched by a client.
 
-Check your remaining credits and current subscription status.
+## Plans
 
-- **Cost**: Free
+New accounts receive 100 free API credits per month. See the [Inspector dashboard](https://inspector.gridinsoft.com/profile) for current plans and pricing.
 
-## 📊 Pricing
+## Development
 
-- **Free**: 100 credits/mo ($0)
-- **Basic**: 1,500 credits/mo (~$44/mo)
-- **Standard**: 5,000 credits/mo (~$124/mo)
+```sh
+npm ci
+npm test
+npm run build
+npm pack --dry-run
+```
 
-_Sign in to your dashboard to view all available plans and detailed comparison._
+The tests cover MCP initialization, discovery, prompt argument forwarding, resources, tool aliases, authentication errors, HTTP failures, cancellation, timeouts, stdio framing, and CLI exit codes. An additional backend integration fixture can be run against an Inspector checkout with Composer dependencies installed:
 
-## 🔗 Links
+```sh
+INSPECTOR_TEST_ROOT=/absolute/path/to/inspector node --test test/php-integration.cjs
+```
 
-- [Official Website](https://inspector.gridinsoft.com)
-- [Website Reputation Checker](https://gridinsoft.com/website-reputation-checker)
-- [NPM Package](https://www.npmjs.com/package/@gridinsoft/mcp-inspector)
+This fixture starts a temporary localhost PHP server, uses the real MCP routes/controller, and makes only public or unauthenticated requests. It does not load the application's environment file or perform paid scans.
 
 ## License
 
