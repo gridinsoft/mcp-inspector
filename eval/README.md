@@ -22,23 +22,20 @@ Review the report's relevant-tool selection, negative controls, argument targets
 
 Separately, `MCP_TEST_ORIGIN=http://127.0.0.1:18767 node test/remote-http.cjs` exercises the actual remote server and OAuth controllers through the official MCP SDK using the backend's loopback-only `tests/fixtures/mcp-oauth-http.php`. That protocol check is not a model-selection benchmark.
 
-## Use an existing Codex sign-in locally
+## Codex client backend
 
-A local run can use saved Codex authentication (including ChatGPT sign-in),
-without an OpenAI API key. This is a separate **Codex client benchmark**;
-results must not be labeled as a Chat Completions API run.
+The optional Codex backend requires an installed, authenticated Codex client.
+It is a **Codex client benchmark**, separate from the Chat Completions API backend.
 
 ```sh
 codex login status
-EVAL_BACKEND=codex EVAL_MODEL=gpt-6-astra npm run eval -- --output /tmp/inspector-codex-eval.json
+EVAL_BACKEND=codex EVAL_MODEL=your-model-id npm run eval -- --output eval/results/codex.json
 ```
 
-On macOS the runner prefers the CLI bundled with `/Applications/Codex.app`
-when present. This avoids an older Homebrew CLI rejecting a model supported
-by the app. Set `EVAL_CODEX_BIN` to choose another installed CLI. The runner
-records the CLI version, explicit model, reasoning effort, and catalogue hash.
-It never reads, copies, or prints authentication files. Update/sign in through
-Codex itself if access fails; do not paste credentials into chat.
+Set `EVAL_CODEX_BIN` to select an installed CLI; otherwise the runner uses the
+desktop app's bundled CLI on macOS when available, then `codex` on PATH.
+The report records the CLI version, model, reasoning effort, and catalogue hash.
+Manage authentication through Codex itself; do not put credentials in this repository.
 
 Use `EVAL_VARIANT=candidate` or `baseline` to limit a run, `--case shop-explicit`
 for one scenario, or `--dry-run` to prepare the plan without model requests.
@@ -64,7 +61,7 @@ before interpreting the scores or comparing variants.
 For a persistent local choice, create gitignored `eval/local.json` (no secrets):
 
 ```json
-{"backend":"codex","model":"gpt-6-astra","concurrency":3}
+{"backend":"codex","model":"your-model-id","concurrency":3}
 ```
 
 Then `npm run eval` uses that configuration. Environment variables take precedence;
