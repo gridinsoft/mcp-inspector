@@ -18,7 +18,7 @@ Add this entry to your client's MCP server configuration:
   "mcpServers": {
     "gridinsoft": {
       "command": "npx",
-      "args": ["-y", "@gridinsoft/mcp-inspector"],
+      "args": ["-y", "@gridinsoft/mcp-inspector@1.0.8"],
       "env": {
         "GRIDINSOFT_API_KEY": "your_api_key_here"
       }
@@ -26,6 +26,10 @@ Add this entry to your client's MCP server configuration:
   }
 }
 ```
+
+The explicit version matters: an unversioned `npx` command can select an older package installed in the current directory or an ancestor. Update existing entries to `@1.0.8` and restart the MCP client.
+
+The adapter verifies your API key before starting the MCP connection. A missing or rejected key causes startup to fail with an error on stderr; this check uses zero credits.
 
 Use the configuration location and command transport supported by your MCP host. If it cannot find `npx`, supply the absolute path to your Node.js installation's `npx` executable.
 
@@ -63,13 +67,23 @@ Example prompt arguments:
 With `GRIDINSOFT_API_KEY` set in your environment:
 
 ```sh
-npx -y @gridinsoft/mcp-inspector check example.com
-npx -y @gridinsoft/mcp-inspector inspect example.com
-npx -y @gridinsoft/mcp-inspector scan https://example.com/login
-npx -y @gridinsoft/mcp-inspector --help
+npx -y @gridinsoft/mcp-inspector@1.0.8 --check
+npx -y @gridinsoft/mcp-inspector@1.0.8 check example.com
+npx -y @gridinsoft/mcp-inspector@1.0.8 inspect example.com
+npx -y @gridinsoft/mcp-inspector@1.0.8 scan https://example.com/login
+npx -y @gridinsoft/mcp-inspector@1.0.8 --help
 ```
 
-Commands print the JSON tool result and exit with a nonzero status on failure. Running without arguments starts the stdio MCP server when launched by a client.
+`--check` verifies authentication without running a tool or spending credits. Success prints `{"ok":true,"version":"1.0.8","authenticated":true,"credits_used":0}`. It exits nonzero on a missing/invalid key, network error, or invalid server response.
+
+Tool commands print the JSON tool result and exit with a nonzero status on failure. Running without arguments starts the stdio MCP server when launched by a client.
+
+## Troubleshooting
+
+- **`GRIDINSOFT_API_KEY is not set`:** add the key to the MCP server configuration; GUI clients may not inherit variables exported in a terminal.
+- **HTTP 401:** replace the placeholder or revoked key with your current [profile key](https://inspector.gridinsoft.com/profile), then restart the client.
+- **An older version starts:** use the complete pinned package name above. Verify with `npx -y @gridinsoft/mcp-inspector@1.0.8 --version`.
+- **Connection or scan timeout:** verify the network and client timeout settings. Do not automatically repeat a paid scan.
 
 ## Plans
 
@@ -90,7 +104,7 @@ The tests cover MCP initialization, discovery, prompt argument forwarding, resou
 INSPECTOR_TEST_ROOT=/absolute/path/to/inspector node --test test/php-integration.cjs
 ```
 
-This fixture starts a temporary localhost PHP server, uses the real MCP routes/controller, and makes only public or unauthenticated requests. It does not load the application's environment file or perform paid scans.
+This fixture starts a temporary localhost PHP server, uses the real MCP routes/controller with a fixed synthetic credential for the connection check. Tool requests are unauthenticated. It does not load the application's environment file or perform paid scans.
 
 ## License
 

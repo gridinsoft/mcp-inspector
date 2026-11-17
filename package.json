@@ -1,6 +1,6 @@
 {
   "name": "@gridinsoft/mcp-inspector",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "mcpName": "io.github.gridinsoft/inspector",
   "description": "MCP server for domain reputation, website safety, and URL trust analysis powered by GridinSoft Inspector",
   "main": "dist/index.js",
@@ -40,7 +40,7 @@
     "url": "https://github.com/gridinsoft/mcp-inspector/issues"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.32.1"
+    "@modelcontextprotocol/sdk": "^1.32.2"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

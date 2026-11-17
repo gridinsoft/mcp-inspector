@@ -135,9 +135,44 @@ test('timeout setting rejects invalid values',()=>{
  for(const timeoutMs of [0,-1,NaN,Infinity,1.5]) assert.throws(()=>new InspectorApi({apiKey:'',timeoutMs}),/positive integer/);
 });
 
+test('connection check authenticates without calling a tool and rejects malformed responses',async()=>{
+ const calls=[];
+ const api=new InspectorApi({apiKey:'test-key',fetch:async (url,options)=>{calls.push({url,options});return json({authenticated:true});}});
+ await api.verifyConnection();
+ assert.equal(calls.length,1);
+ assert.equal(new URL(calls[0].url).pathname,'/mcp/v1/auth/check');
+ assert.equal(calls[0].options.method,'GET');
+ assert.equal(calls[0].options.body,undefined);
+ assert.equal(calls[0].options.headers.Authorization,'Bearer test-key');
+ const missing=new InspectorApi({apiKey:' ',fetch:()=>assert.fail('missing key must stay local')});
+ await assert.rejects(missing.verifyConnection(),/GRIDINSOFT_API_KEY/);
+ for(const response of [null,{}, {authenticated:false},{authenticated:'true'}]) {
+  await assert.rejects(new InspectorApi({apiKey:'key',fetch:async()=>json(response)}).verifyConnection(),/invalid authentication check/);
+ }
+});
+
 const fixture=path.join(__dirname,'mock-fetch.cjs');
 const entry=path.join(__dirname,'../dist/index.js');
 const env={PATH:process.env.PATH||'',GRIDINSOFT_API_KEY:'test-key'};
+test('stdio startup rejects missing and invalid credentials before advertising a connection',()=>{
+ for(const extra of [{GRIDINSOFT_API_KEY:''},{MCP_TEST_SCENARIO:'invalid-key'},{MCP_TEST_SCENARIO:'bad-auth-response'}]) {
+  const result=spawnSync(process.execPath,['--require',fixture,entry],{env:{...env,...extra},encoding:'utf8',timeout:5000,input:''});
+  assert.equal(result.status,1);
+  assert.equal(result.stdout,'');
+  assert.match(result.stderr,/GRIDINSOFT_API_KEY|HTTP 401|invalid authentication check/);
+  assert.doesNotMatch(result.stderr,/test-key/);
+ }
+});
+
+test('CLI connection diagnostic costs no credits and reports a useful exit status',()=>{
+ const cli=extra=>spawnSync(process.execPath,['--require',fixture,entry,'--check'],{env:{...env,...extra},encoding:'utf8',timeout:5000});
+ const success=cli({});
+ assert.equal(success.status,0);
+ assert.deepEqual(JSON.parse(success.stdout),{ok:true,version:VERSION,authenticated:true,credits_used:0});
+ for(const extra of [{GRIDINSOFT_API_KEY:''},{MCP_TEST_SCENARIO:'invalid-key'}]) {
+  const failure=cli(extra); assert.equal(failure.status,1); assert.equal(failure.stdout,'');
+ }
+});
 test('real stdio child initializes, lists tools, and calls a tool without stdout contamination',async t=>{
  const client=new Client({name:'stdio-test',version:'1.0.0'});
  const transport=new StdioClientTransport({command:process.execPath,args:['--require',fixture,entry],env,stderr:'pipe'});

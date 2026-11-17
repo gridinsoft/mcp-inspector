@@ -27,11 +27,22 @@ $router = new class {
     }
 };
 require $root . '/routes/mcp.inc.php';
+// Only the synthetic startup credential is accepted. No environment or DB is loaded.
+$controller = new class extends Controllers\ControllerMCP {
+    protected function newUser(): App\User
+    {
+        return new class extends App\User {
+            public function __construct() {}
+            public function ApiKey(string $apikey): bool { return $apikey === 'integration-placeholder'; }
+            public function getId(): ?int { return 1; }
+        };
+    }
+};
 try {
     $route = $router->items[parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)] ?? null;
     if (!$route) throw new App\Core\HttpException('Not found', 404);
     $method = str_replace('-', '_', substr($route->name, 4));
-    $result = (new $route->controller())->$method();
+    $result = $controller->$method();
     echo App\Core\JsonResponse::send($result, http_response_code() ?: 200);
 } catch (App\Core\HttpException $error) {
     echo App\Core\JsonResponse::send($error->payload(), $error->statusCode());

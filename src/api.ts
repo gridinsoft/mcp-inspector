@@ -39,6 +39,17 @@ export class InspectorApi {
     this.fetchImpl = options.fetch ?? fetch;
   }
 
+  async verifyConnection(): Promise<void> {
+    if (!this.apiKey) {
+      throw new Error("GRIDINSOFT_API_KEY is not set. Copy your API key from https://inspector.gridinsoft.com/profile into your MCP configuration.");
+    }
+    // This endpoint only authenticates; it never runs a tool or spends credits.
+    const result = await this.call("/auth/check");
+    if (!result || typeof result !== "object" || !("authenticated" in result) || result.authenticated !== true) {
+      throw new Error("Inspector API returned an invalid authentication check.");
+    }
+  }
+
   async call(endpoint: string, body?: object, signal?: AbortSignal): Promise<unknown> {
     const controller = new AbortController();
     const cancel = () => controller.abort(signal?.reason);

@@ -14,6 +14,7 @@ Usage:
   mcp-inspector check DOMAIN      Check domain reputation
   mcp-inspector inspect DOMAIN    Alias for check
   mcp-inspector scan URL          Scan a URL
+  mcp-inspector --check           Verify the API key and connection (zero credits)
   mcp-inspector --help            Show this help message
   mcp-inspector --version         Show version information
 
@@ -28,7 +29,8 @@ For URL scans, configure your MCP client's request timeout to at least 120 secon
     console.log(VERSION);
     return;
   }
-  if (args.length > 0 && (args.length !== 2 || !["check", "inspect", "scan"].includes(args[0]) || !args[1].trim())) {
+  const checkConnection = args.length === 1 && args[0] === "--check";
+  if (!checkConnection && args.length > 0 && (args.length !== 2 || !["check", "inspect", "scan"].includes(args[0]) || !args[1].trim())) {
     throw new Error("Invalid arguments. Use --help for usage.");
   }
 
@@ -37,6 +39,11 @@ For URL scans, configure your MCP client's request timeout to at least 120 secon
     apiKey: process.env.GRIDINSOFT_API_KEY ?? "",
     timeoutMs: timeoutValue === undefined ? undefined : Number(timeoutValue),
   });
+  if (checkConnection) {
+    await api.verifyConnection();
+    console.log(JSON.stringify({ ok: true, version: VERSION, authenticated: true, credits_used: 0 }));
+    return;
+  }
   if (args.length === 2) {
     const scan = args[0] === "scan";
     const result = await callTool(api, scan ? "scan_url" : "inspect_domain", { [scan ? "url" : "domain"]: args[1] });
@@ -47,6 +54,8 @@ For URL scans, configure your MCP client's request timeout to at least 120 secon
   if (process.stdin.isTTY) {
     throw new Error("This server is intended to be run by an MCP client using stdio. Use --help for CLI usage.");
   }
+  // Do not advertise a usable connection with missing or rejected credentials.
+  await api.verifyConnection();
   await createServer(api).connect(new StdioServerTransport());
 }
 
