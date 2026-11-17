@@ -9,7 +9,7 @@ import {
 } from "@modelcontextprotocol/sdk/types.js";
 import { ApiError, InspectorApi } from "./api.js";
 
-export const VERSION = "1.1.0";
+export const VERSION = "1.1.1";
 
 function failure(error: unknown) {
   return {
