@@ -96,4 +96,16 @@ async function run() {
   save(); console.log(JSON.stringify({ status: report.status, modelRequests: report.modelRequests, metrics: report.metrics, output }));
 }
 module.exports = { canonical, callsOf, score, stub };
-if (require.main === module) run().catch(error => { console.error(error.message); process.exitCode = 1; });
+if (require.main === module) {
+  const localPath = path.join(__dirname, 'local.json');
+  if (fs.existsSync(localPath)) {
+    const local = JSON.parse(fs.readFileSync(localPath, 'utf8'));
+    const fields = { backend: 'EVAL_BACKEND', model: 'EVAL_MODEL', codexBin: 'EVAL_CODEX_BIN', concurrency: 'EVAL_CONCURRENCY' };
+    for (const [key, value] of Object.entries(local)) {
+      if (!fields[key] || !['string', 'number'].includes(typeof value)) throw Error('Unsupported local evaluation setting: ' + key);
+      if (process.env[fields[key]] === undefined) process.env[fields[key]] = String(value);
+    }
+  }
+  if (process.env.EVAL_BACKEND && !['api', 'codex'].includes(process.env.EVAL_BACKEND)) throw Error('EVAL_BACKEND must be api or codex');
+  (process.env.EVAL_BACKEND === 'codex' ? require('./codex.cjs').run() : run()).catch(error => { console.error(error.message); process.exitCode = 1; });
+}

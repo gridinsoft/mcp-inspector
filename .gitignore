@@ -7,3 +7,4 @@ dist/
 .mcpregistry*
 
 eval/results/
+eval/local.json
