@@ -6,12 +6,12 @@
     "url": "https://github.com/gridinsoft/mcp-inspector",
     "source": "github"
   },
-  "version": "1.0.8",
+  "version": "1.1.0",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "@gridinsoft/mcp-inspector",
-      "version": "1.0.8",
+      "version": "1.1.0",
       "transport": {
         "type": "stdio"
       },
@@ -23,6 +23,12 @@
           "isSecret": true
         }
       ]
+    }
+  ],
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://inspector.gridinsoft.com/mcp/server"
     }
   ]
 }

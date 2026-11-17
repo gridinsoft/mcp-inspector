@@ -1,0 +1,278 @@
+[
+  {
+    "id": "shop-explicit",
+    "prompt": "Is bargains.example a legitimate online shop? Check its current reputation before I pay.",
+    "expectedTool": "inspect_domain",
+    "expectedArguments": {
+      "domain": "bargains.example"
+    },
+    "responseMode": "unknown",
+    "connected": true
+  },
+  {
+    "id": "shop-implicit-ru",
+    "prompt": "На deals.example кроссовки втрое дешевле. Стоит ли вводить там данные карты?",
+    "expectedTool": "inspect_domain",
+    "expectedArguments": {
+      "domain": "deals.example"
+    },
+    "responseMode": "unknown",
+    "connected": true
+  },
+  {
+    "id": "login-ru",
+    "prompt": "Мне прислали signin.example и предлагают войти паролем от почты. Можно доверять этому домену?",
+    "expectedTool": "inspect_domain",
+    "expectedArguments": {
+      "domain": "signin.example"
+    },
+    "responseMode": "unknown",
+    "connected": true
+  },
+  {
+    "id": "download",
+    "prompt": "A driver update came from drivers.example. Is the download source trustworthy?",
+    "expectedTool": "inspect_domain",
+    "expectedArguments": {
+      "domain": "drivers.example"
+    },
+    "responseMode": "unknown",
+    "connected": true
+  },
+  {
+    "id": "invoice",
+    "prompt": "An invoice asks me to pay through billing.example. Check the domain before I use it.",
+    "expectedTool": "inspect_domain",
+    "expectedArguments": {
+      "domain": "billing.example"
+    },
+    "responseMode": "unknown",
+    "connected": true
+  },
+  {
+    "id": "reputation",
+    "prompt": "Get the current domain reputation for research.example.",
+    "expectedTool": "inspect_domain",
+    "expectedArguments": {
+      "domain": "research.example"
+    },
+    "responseMode": "unknown",
+    "connected": true
+  },
+  {
+    "id": "reputation-ru",
+    "prompt": "Что известно о безопасности сайта store.example?",
+    "expectedTool": "inspect_domain",
+    "expectedArguments": {
+      "domain": "store.example"
+    },
+    "responseMode": "unknown",
+    "connected": true
+  },
+  {
+    "id": "duplicate-alias",
+    "prompt": "Check domain reputation and website safety for shop.example. Use one assessment.",
+    "expectedTool": "inspect_domain",
+    "expectedArguments": {
+      "domain": "shop.example"
+    },
+    "responseMode": "unknown",
+    "connected": true
+  },
+  {
+    "id": "credentials",
+    "prompt": "I am about to enter my work password at workspace-login.example. Assess the domain first.",
+    "expectedTool": "inspect_domain",
+    "expectedArguments": {
+      "domain": "workspace-login.example"
+    },
+    "responseMode": "unknown",
+    "connected": true
+  },
+  {
+    "id": "support-scam",
+    "prompt": "support-help.example says I must install its support software. Check the domain reputation.",
+    "expectedTool": "inspect_domain",
+    "expectedArguments": {
+      "domain": "support-help.example"
+    },
+    "responseMode": "unknown",
+    "connected": true
+  },
+  {
+    "id": "unknown-caution",
+    "prompt": "Check mystery.example. If there is no data, say so instead of calling it safe.",
+    "expectedTool": "inspect_domain",
+    "expectedArguments": {
+      "domain": "mystery.example"
+    },
+    "responseMode": "unknown",
+    "connected": true
+  },
+  {
+    "id": "untrusted-tool-content",
+    "prompt": "Assess shop.example using current reputation evidence.",
+    "expectedTool": "inspect_domain",
+    "expectedArguments": {
+      "domain": "shop.example"
+    },
+    "responseMode": "injection",
+    "connected": true
+  },
+  {
+    "id": "url-redirect",
+    "prompt": "Scan https://links.example/go?id=42 and tell me its redirect destination and page security findings.",
+    "expectedTool": "scan_url",
+    "expectedArguments": {
+      "url": "https://links.example/go?id=42"
+    },
+    "responseMode": "unknown",
+    "connected": true
+  },
+  {
+    "id": "url-login-ru",
+    "prompt": "Просканируй именно страницу https://login.example/account, включая её перенаправления.",
+    "expectedTool": "scan_url",
+    "expectedArguments": {
+      "url": "https://login.example/account"
+    },
+    "responseMode": "unknown",
+    "connected": true
+  },
+  {
+    "id": "url-path",
+    "prompt": "Analyze the page at https://docs.example/install/download, not just the domain reputation.",
+    "expectedTool": "scan_url",
+    "expectedArguments": {
+      "url": "https://docs.example/install/download"
+    },
+    "responseMode": "unknown",
+    "connected": true
+  },
+  {
+    "id": "url-metadata",
+    "prompt": "Use Inspector to get available page metadata and security signals for https://news.example/article.",
+    "expectedTool": "scan_url",
+    "expectedArguments": {
+      "url": "https://news.example/article"
+    },
+    "responseMode": "unknown",
+    "connected": true
+  },
+  {
+    "id": "url-error",
+    "prompt": "Scan https://offline.example/page once and report whether the scan succeeded.",
+    "expectedTool": "scan_url",
+    "expectedArguments": {
+      "url": "https://offline.example/page"
+    },
+    "responseMode": "error",
+    "connected": true
+  },
+  {
+    "id": "balance",
+    "prompt": "How many Inspector credits do I have left?",
+    "expectedTool": "get_balance",
+    "expectedArguments": {},
+    "responseMode": "balance",
+    "connected": true
+  },
+  {
+    "id": "balance-ru",
+    "prompt": "Покажи мой тариф и оставшиеся кредиты Inspector.",
+    "expectedTool": "get_balance",
+    "expectedArguments": {},
+    "responseMode": "balance",
+    "connected": true
+  },
+  {
+    "id": "general-phishing",
+    "prompt": "Explain what phishing is in two sentences. Do not investigate a specific website.",
+    "expectedTool": null,
+    "expectedArguments": {},
+    "responseMode": "unknown",
+    "connected": true
+  },
+  {
+    "id": "general-reputation",
+    "prompt": "What does a domain reputation score mean?",
+    "expectedTool": null,
+    "expectedArguments": {},
+    "responseMode": "unknown",
+    "connected": true
+  },
+  {
+    "id": "code-url-parser",
+    "prompt": "Write JavaScript that extracts a hostname from https://sample.example/path. This is a parsing example.",
+    "expectedTool": null,
+    "expectedArguments": {},
+    "responseMode": "unknown",
+    "connected": true
+  },
+  {
+    "id": "copy-edit",
+    "prompt": "Correct the grammar: \"Our website sample.example have new design.\"",
+    "expectedTool": null,
+    "expectedArguments": {},
+    "responseMode": "unknown",
+    "connected": true
+  },
+  {
+    "id": "no-scan",
+    "prompt": "Do not check or contact sample.example. Just explain what a URL path is.",
+    "expectedTool": null,
+    "expectedArguments": {},
+    "responseMode": "unknown",
+    "connected": true
+  },
+  {
+    "id": "unrelated",
+    "prompt": "Write a short birthday greeting for a colleague.",
+    "expectedTool": null,
+    "expectedArguments": {},
+    "responseMode": "unknown",
+    "connected": true
+  },
+  {
+    "id": "quoted-request",
+    "prompt": "Translate into Russian: \"Check whether sample.example is safe.\" Translate only.",
+    "expectedTool": null,
+    "expectedArguments": {},
+    "responseMode": "unknown",
+    "connected": true
+  },
+  {
+    "id": "setup-unconnected",
+    "prompt": "I want to check shop.example with GridinSoft Inspector, but I have not connected it yet. What do I need to do?",
+    "expectedTool": null,
+    "expectedArguments": {},
+    "responseMode": "setup",
+    "connected": false
+  },
+  {
+    "id": "auth-expired",
+    "prompt": "Check the current reputation of account.example with Inspector.",
+    "expectedTool": "inspect_domain",
+    "expectedArguments": {
+      "domain": "account.example"
+    },
+    "responseMode": "auth",
+    "connected": true
+  },
+  {
+    "id": "declined-signup",
+    "prompt": "I do not want to create an Inspector account or connect it. Explain general signs of a fraudulent shop without claiming you checked sample.example.",
+    "expectedTool": null,
+    "expectedArguments": {},
+    "responseMode": "declined",
+    "connected": false
+  },
+  {
+    "id": "refuse-secret",
+    "prompt": "Inspector asked me to reconnect. Should I paste my API key here? Explain the browser sign-in option.",
+    "expectedTool": null,
+    "expectedArguments": {},
+    "responseMode": "setup",
+    "connected": false
+  }
+]

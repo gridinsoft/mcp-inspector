@@ -1,6 +1,6 @@
 {
   "name": "@gridinsoft/mcp-inspector",
-  "version": "1.0.8",
+  "version": "1.1.0",
   "mcpName": "io.github.gridinsoft/inspector",
   "description": "MCP server for domain reputation, website safety, and URL trust analysis powered by GridinSoft Inspector",
   "main": "dist/index.js",
@@ -14,7 +14,10 @@
   "scripts": {
     "build": "tsc",
     "prepublishOnly": "npm run build",
-    "test": "npm run build && node --test test/*.test.cjs"
+    "test": "npm run build && node --test test/*.test.cjs",
+    "test:remote": "node test/remote-http.cjs",
+    "eval": "node eval/run.cjs",
+    "eval:plan": "node eval/run.cjs --dry-run"
   },
   "keywords": [
     "mcp",

@@ -2,14 +2,28 @@
 
 A [Model Context Protocol](https://modelcontextprotocol.io/) server for domain reputation and URL analysis, powered by [GridinSoft Inspector](https://inspector.gridinsoft.com).
 
-## Requirements
+## Remote MCP with browser sign-in
+
+Add a remote server in a client that supports **Streamable HTTP and OAuth**, using:
+
+```text
+https://inspector.gridinsoft.com/mcp/server
+```
+
+Choose Connect/Authenticate, sign in or create a Free Inspector account, confirm your email if needed, and review the permission screen. No Node.js installation or copied API key is needed. The connection can check domains (3 credits), scan URLs (10 credits), and read your balance (free). New Free accounts include 100 credits per month. Never paste secrets into chat.
+
+Verify the connection once with `get_balance`, then ask a concrete website-trust question. Manage or revoke access in [Connected AI assistants](https://inspector.gridinsoft.com/mcp/connections). Connections expire after 30 days and then require sign-in again. Access tokens last 15 minutes; compatible clients refresh them automatically.
+
+The remote service exposes the three canonical tools: `inspect_domain`, `scan_url`, and `get_balance`. It also exposes the two prompts and category resource below. The client must support OAuth discovery, dynamic registration of public clients, S256 PKCE, and resource indicators. Legacy SSE transport and client-ID metadata documents are not supported; use the local adapter if your client cannot use this flow. Set a 120-second tool timeout where configurable.
+
+## Local adapter requirements
 
 - Node.js 22 or newer, with npm/npx available to your MCP host.
 - A GridinSoft Inspector API key from your [profile](https://inspector.gridinsoft.com/profile).
 
-The npm package runs locally over **stdio** and calls the Inspector REST API over HTTPS. `https://inspector.gridinsoft.com/mcp` is the documentation page; `/mcp/v1` is the REST bridge used by this package. Neither URL is a native remote MCP Streamable HTTP or SSE endpoint.
+The npm package runs locally over **stdio** and calls the Inspector REST API over HTTPS. `https://inspector.gridinsoft.com/mcp` is the documentation page; `/mcp/v1` is the REST bridge used by this package. For native remote MCP, use `/mcp/server` with the browser sign-in flow above.
 
-## Connect an MCP client
+## Connect the local adapter
 
 Add this entry to your client's MCP server configuration:
 
@@ -18,7 +32,7 @@ Add this entry to your client's MCP server configuration:
   "mcpServers": {
     "gridinsoft": {
       "command": "npx",
-      "args": ["-y", "@gridinsoft/mcp-inspector@1.0.8"],
+      "args": ["-y", "@gridinsoft/mcp-inspector@1.1.0"],
       "env": {
         "GRIDINSOFT_API_KEY": "your_api_key_here"
       }
@@ -27,7 +41,7 @@ Add this entry to your client's MCP server configuration:
 }
 ```
 
-The explicit version matters: an unversioned `npx` command can select an older package installed in the current directory or an ancestor. Update existing entries to `@1.0.8` and restart the MCP client.
+The explicit version matters: an unversioned `npx` command can select an older package installed in the current directory or an ancestor. Update existing entries to `@1.1.0` and restart the MCP client.
 
 The adapter verifies your API key before starting the MCP connection. A missing or rejected key causes startup to fail with an error on stderr; this check uses zero credits.
 
@@ -67,14 +81,14 @@ Example prompt arguments:
 With `GRIDINSOFT_API_KEY` set in your environment:
 
 ```sh
-npx -y @gridinsoft/mcp-inspector@1.0.8 --check
-npx -y @gridinsoft/mcp-inspector@1.0.8 check example.com
-npx -y @gridinsoft/mcp-inspector@1.0.8 inspect example.com
-npx -y @gridinsoft/mcp-inspector@1.0.8 scan https://example.com/login
-npx -y @gridinsoft/mcp-inspector@1.0.8 --help
+npx -y @gridinsoft/mcp-inspector@1.1.0 --check
+npx -y @gridinsoft/mcp-inspector@1.1.0 check example.com
+npx -y @gridinsoft/mcp-inspector@1.1.0 inspect example.com
+npx -y @gridinsoft/mcp-inspector@1.1.0 scan https://example.com/login
+npx -y @gridinsoft/mcp-inspector@1.1.0 --help
 ```
 
-`--check` verifies authentication without running a tool or spending credits. Success prints `{"ok":true,"version":"1.0.8","authenticated":true,"credits_used":0}`. It exits nonzero on a missing/invalid key, network error, or invalid server response.
+`--check` verifies authentication without running a tool or spending credits. Success prints `{"ok":true,"version":"1.1.0","authenticated":true,"credits_used":0}`. It exits nonzero on a missing/invalid key, network error, or invalid server response.
 
 Tool commands print the JSON tool result and exit with a nonzero status on failure. Running without arguments starts the stdio MCP server when launched by a client.
 
@@ -82,7 +96,7 @@ Tool commands print the JSON tool result and exit with a nonzero status on failu
 
 - **`GRIDINSOFT_API_KEY is not set`:** add the key to the MCP server configuration; GUI clients may not inherit variables exported in a terminal.
 - **HTTP 401:** replace the placeholder or revoked key with your current [profile key](https://inspector.gridinsoft.com/profile), then restart the client.
-- **An older version starts:** use the complete pinned package name above. Verify with `npx -y @gridinsoft/mcp-inspector@1.0.8 --version`.
+- **An older version starts:** use the complete pinned package name above. Verify with `npx -y @gridinsoft/mcp-inspector@1.1.0 --version`.
 - **Connection or scan timeout:** verify the network and client timeout settings. Do not automatically repeat a paid scan.
 
 ## Plans
@@ -109,3 +123,7 @@ This fixture starts a temporary localhost PHP server, uses the real MCP routes/c
 ## License
 
 MIT
+
+## Evaluation and protocol checks
+
+See [the 30-scenario tool-selection evaluation](eval/README.md) for a reproducible comparison, synthetic tool responses, and the official SDK OAuth/HTTP integration test. Dry runs are explicitly reported as unmeasured.

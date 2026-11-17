@@ -5,3 +5,5 @@ dist/
 .env
 .mcpregistry_*
 .mcpregistry*
+
+eval/results/
